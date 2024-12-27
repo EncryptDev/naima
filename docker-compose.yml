@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+    entrypoint: php artisan octane:frankenphp --workers=2 --max-requests=500
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: naima
+      DB_USERNAME: naima
+      DB_PASSWORD: secret
+      REDIS_HOST: redis
+      REDIS_PASSWORD: null
+      REDIS_PORT: 6379
+
+  db:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: laravel
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--requirepass", ""]
+    volumes:
+      - redis-data:/data
+
+volumes:
+  postgres-data:
+  redis-data:
