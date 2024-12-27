@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-    entrypoint: php artisan octane:frankenphp --workers=2 --max-requests=500
+    entrypoint: php artisan octane:frankenphp --workers=4 --max-requests=500
     ports:
       - "8000:8000"
     volumes:
@@ -22,6 +22,9 @@ services:
       REDIS_HOST: redis
       REDIS_PASSWORD: null
       REDIS_PORT: 6379
+      REDIS_CLIENT: predis
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
 
   db:
     image: postgres:15
